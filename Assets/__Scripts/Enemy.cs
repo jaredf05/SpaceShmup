@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
     public int score = 100;
 
 
-    private BoundsCheck bndCheck;
+    protected BoundsCheck bndCheck;
     void Awake()
     {
         bndCheck = GetComponent<BoundsCheck>();
@@ -55,14 +55,25 @@ public class Enemy : MonoBehaviour
     void OnCollisionEnter(Collision coll)
     {
         GameObject otherGO = coll.gameObject;
-        if (otherGO.GetComponent<ProjectileHero>() != null)
+        // Check for collisions with ProjectileHero
+        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
+        if (p != null)
         {
-            Destroy(otherGO);   // Destroy the Projectile
-            Destroy(gameObject);    // Destroy the Enemy GameObject
-        }
-        else
+            // Only damage this Enemy if it's on screen
+            if (bndCheck.isOnScreen)
+            {
+                health -= Main.GET_WEAPON_DEFINITION(p.type).damageOnHit;
+                if (health <= 0)
+                {
+                    // Destroy this enemy
+                    Destroy(this.gameObject);
+                }
+            }
+            // Destroy the ProjectileHero regardless
+            Destroy(otherGO);
+        } else
         {
-            Debug.Log("Enemy hit by non-ProjectileHero: " + otherGO.name);
+            print("Enemy hit by non-ProjectileHero: " + otherGO.name);
         }
     }
 }
