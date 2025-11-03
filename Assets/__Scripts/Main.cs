@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;  // Enables the loading and reloading of scenes
 
@@ -14,9 +15,35 @@ public class Main : MonoBehaviour
     public float enemySpawnPerSecond = 0.5f;    // # Enemies spawned/second
     public float enemyInsetDefault = 1.5f;      // Inset from the sides
     public float gameRestartDelay = 2;
+    public GameObject prefabPowerUp;
     public WeaponDefinition[] weaponDefinitions;
+     public eWeaponType[] powerUpFrequency = new eWeaponType[] {
+        eWeaponType.blaster, eWeaponType.blaster,
+        eWeaponType.spread, eWeaponType.shield};
 
     private BoundsCheck bndCheck;
+
+
+
+    static public void SHIP_DESTROYED(Enemy e)
+        {
+            //Potentially generate a PowerUp
+            if(Random.value <= e.powerUpDropChance)
+            {
+                //Choose which powerup to pick
+                //Pick one from the possibilities in powerupfrequency
+                int ndx = Random.Range(0, S.powerUpFrequency.Length);
+                eWeaponType pUpType = S.powerUpFrequency[ndx];
+                //Spawn powerup
+                GameObject go = Instantiate<GameObject>(S.prefabPowerUp);
+                PowerUp pUp = go.GetComponent<PowerUp>();
+                pUp.SetType(pUpType);
+                //Set it to the position of the destroyed ship
+                pUp.transform.position = e.transform.position;
+            }
+        }
+
+
 
     void Awake()
     {
@@ -41,6 +68,7 @@ public class Main : MonoBehaviour
         if (!spawnEnemies)
         {
             Invoke(nameof(SpawnEnemy), 1f / enemySpawnPerSecond);
+            return;
         }
 
         // Pick a random Enemy prefab to instantiate

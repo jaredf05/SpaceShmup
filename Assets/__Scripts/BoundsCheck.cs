@@ -43,6 +43,9 @@ public class BoundsCheck : MonoBehaviour
 
     void LateUpdate()
     {
+
+        screenLocs = eScreenLocs.onScreen; //possible error fix
+
         // Find the checkRadius that will enable center, inset, or outset
         float checkRadius = 0;
         if (boundsType == eType.inset) checkRadius = -radius;
