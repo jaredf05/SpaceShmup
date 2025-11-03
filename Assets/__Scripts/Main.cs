@@ -23,25 +23,24 @@ public class Main : MonoBehaviour
 
     private BoundsCheck bndCheck;
 
-
-
     static public void SHIP_DESTROYED(Enemy e)
+    {
+
+        //Potentially generate a PowerUp
+        if (Random.value <= e.powerUpDropChance)
         {
-            //Potentially generate a PowerUp
-            if(Random.value <= e.powerUpDropChance)
-            {
-                //Choose which powerup to pick
-                //Pick one from the possibilities in powerupfrequency
-                int ndx = Random.Range(0, S.powerUpFrequency.Length);
-                eWeaponType pUpType = S.powerUpFrequency[ndx];
-                //Spawn powerup
-                GameObject go = Instantiate<GameObject>(S.prefabPowerUp);
-                PowerUp pUp = go.GetComponent<PowerUp>();
-                pUp.SetType(pUpType);
-                //Set it to the position of the destroyed ship
-                pUp.transform.position = e.transform.position;
-            }
+            //Choose which powerup to pick
+            //Pick one from the possibilities in powerupfrequency
+            int ndx = Random.Range(0, S.powerUpFrequency.Length);
+            eWeaponType pUpType = S.powerUpFrequency[ndx];
+            //Spawn powerup
+            GameObject go = Instantiate<GameObject>(S.prefabPowerUp);
+            PowerUp pUp = go.GetComponent<PowerUp>();
+            pUp.SetType(pUpType);
+            //Set it to the position of the destroyed ship
+            pUp.transform.position = e.transform.position;
         }
+    }
 
 
 
